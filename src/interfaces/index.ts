@@ -1,5 +1,5 @@
 export interface IOhlvcH {
-  time: number;
+  time: string;
   high: number;
   low: number;
   average: number;
