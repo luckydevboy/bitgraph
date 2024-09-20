@@ -34,9 +34,9 @@ export default function Home() {
       <HourlyPairOhlcv
         actives={actives}
         result={result}
-        className="col-span-9 row-span-3"
+        className="col-span-12 lg:col-span-9 row-span-3"
       />
-      <HourlyExchangeVolCarousel className="col-span-3 row-span-3" />
+      <HourlyExchangeVolCarousel className="col-span-12 lg:col-span-3 row-span-3" />
       <Toggles
         onClick={handleClickToggles}
         className="col-span-12 row-span-1"
