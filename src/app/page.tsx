@@ -30,7 +30,7 @@ export default function Home() {
   };
 
   return (
-    <div className="grid grid-cols-12 grid-rows-4 gap-6 p-6 h-svh">
+    <div className="grid grid-cols-12 lg:grid-rows-4 gap-6 p-6 lg:h-svh">
       <HourlyPairOhlcv
         actives={actives}
         result={result}
