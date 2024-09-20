@@ -1,21 +1,17 @@
-// In Next.js, this file would be called: app/providers.jsx
 "use client";
 
-// Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
-import {
-  isServer,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { isServer, QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { ReactNode } from "react";
 
+// 1. Function to create the Query Client
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        // With SSR, we usually want to set some default staleTime
-        // above 0 to avoid refetching immediately on the client
-        staleTime: 60 * 1000,
+        staleTime: 60 * 1000, // 1 minute
+        gcTime: 1000 * 60 * 60,
       },
     },
   });
@@ -23,32 +19,38 @@ function makeQueryClient() {
 
 let browserQueryClient: QueryClient | undefined = undefined;
 
+// 2. Function to get Query Client for server/browser
 function getQueryClient() {
   if (isServer) {
-    // Server: always make a new query client
-    return makeQueryClient();
+    return makeQueryClient(); // Always create a new client on the server
   } else {
-    // Browser: make a new query client if we don't already have one
-    // This is very important, so we don't re-make a new client if React
-    // suspends during the initial render. This may not be needed if we
-    // have a suspense boundary BELOW the creation of the query client
-    if (!browserQueryClient) browserQueryClient = makeQueryClient();
+    if (!browserQueryClient) browserQueryClient = makeQueryClient(); // Reuse client in browser
     return browserQueryClient;
   }
 }
 
+// 3. Create the persister for sync storage
+const persister = createSyncStoragePersister({
+  storage: typeof window !== "undefined" ? window.localStorage : undefined, // Use localStorage on the client
+});
+
+// 4. ReactQueryProvider component with persistence
 export default function ReactQueryProvider({
   children,
 }: {
   children: ReactNode;
 }) {
-  // NOTE: Avoid useState when initializing the query client if you don't
-  //       have a suspense boundary between this and the code that may
-  //       suspend because React will throw away the client on the initial
-  //       render if it suspends and there is no boundary
   const queryClient = getQueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister }}
+      onSuccess={() => {
+        console.log("Query data persisted successfully!");
+      }}
+    >
+      {children}
+    </PersistQueryClientProvider>
   );
 }
