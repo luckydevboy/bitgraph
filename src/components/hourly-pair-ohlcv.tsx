@@ -31,9 +31,10 @@ const chartConfig = {
 type Props = {
   result: UseQueryResult<IOhlcvH[], Error>;
   className?: string;
+  actives: ("average" | "high" | "low")[];
 };
 
-const HourlyPairOhlcv = ({ result, className }: Props) => {
+const HourlyPairOhlcv = ({ result, className, actives }: Props) => {
   const { data, isLoading, isError, error } = result;
 
   return (
@@ -58,9 +59,9 @@ const HourlyPairOhlcv = ({ result, className }: Props) => {
                 tickFormatter={(value) => `$${value.toLocaleString()}`}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="low" fill="var(--color-low)" radius={4} />
-              <Bar dataKey="average" fill="var(--color-average)" radius={4} />
-              <Bar dataKey="high" fill="var(--color-high)" radius={4} />
+              {actives.map((item) => (
+                <Bar dataKey={item} fill={`var(--color-${item})`} radius={4} />
+              ))}
             </BarChart>
           </ChartContainer>
         )}
