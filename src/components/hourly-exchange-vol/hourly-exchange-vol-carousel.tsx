@@ -29,7 +29,7 @@ const HourlyExchangeVolCarousel = ({ className }: Props) => {
           <Carousel className="h-full">
             <CarouselContent className="h-full">
               {data.map((vol) => (
-                <CarouselItem className="h-full">
+                <CarouselItem key={vol.time} className="h-full">
                   <HourlyExchangeVol data={vol} />
                 </CarouselItem>
               ))}

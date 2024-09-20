@@ -60,7 +60,12 @@ const HourlyPairOhlcv = ({ result, className, actives }: Props) => {
               />
               <ChartTooltip content={<ChartTooltipContent />} />
               {actives.map((item) => (
-                <Bar dataKey={item} fill={`var(--color-${item})`} radius={4} />
+                <Bar
+                  key={item}
+                  dataKey={item}
+                  fill={`var(--color-${item})`}
+                  radius={4}
+                />
               ))}
             </BarChart>
           </ChartContainer>
