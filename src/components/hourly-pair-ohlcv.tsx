@@ -1,20 +1,17 @@
+import { UseQueryResult } from "@tanstack/react-query";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
-import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { IOhlvcH } from "@/interfaces";
-import { UseQueryResult } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+} from "@/components";
+import { IOhlcvH } from "@/interfaces";
 
 const chartConfig = {
   low: {
@@ -32,7 +29,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 type Props = {
-  result: UseQueryResult<IOhlvcH[], Error>;
+  result: UseQueryResult<IOhlcvH[], Error>;
   className?: string;
 };
 
@@ -42,19 +39,19 @@ const HourlyPairOhlcv = ({ result, className }: Props) => {
   return (
     <Card className={className}>
       <CardHeader></CardHeader>
-      <CardContent>
+      <CardContent className="h-[calc(100%-24px-48px)]">
         {/* TODO: Use Skeleton component */}
         {isLoading && <>Loading...</>}
 
         {data && (
-          <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+          <ChartContainer config={chartConfig} className="h-full w-full">
             <BarChart accessibilityLayer data={data}>
               <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="time"
-                tickLine={false}
+                tickLine={true}
                 tickMargin={10}
-                axisLine={false}
+                axisLine={true}
               />
               <YAxis
                 dataKey="average"
